@@ -72,7 +72,7 @@
       from { box-shadow: 0 0 10px #6e8efb; }
       to { box-shadow: 0 0 20px #a777e3; }
     }
-    .countdown {
+    .countdown, .lockdown {
       margin-top: 20px;
       font-size: 18px;
       font-weight: bold;
@@ -127,6 +127,7 @@
     <br>
     <button id="copyBtn" onclick="copyKey()">📋 Sao chép</button>
     <div class="countdown" id="countdown"></div>
+    <div class="lockdown" id="lockdown" style="display:none"></div>
   </div>  <div class="about">
     <p><strong>Người tạo ra:</strong> Nguyễn Công Tiến, Nguyễn Hoàng Phú</p>
     <p>TikTok: @cailon._2 | @anh_qua_ngu_ngoc</p>
@@ -151,11 +152,12 @@
     const lockDialog = document.getElementById("lockDialog");
     const lockMessage = document.getElementById("lockMessage");
     const countdownEl = document.getElementById("countdown");
+    const lockCountdownEl = document.getElementById("lockdown");
     const copyBtn = document.getElementById("copyBtn");
     const deviceIdBox = document.getElementById("deviceIdBox");
 
     // ==== DÁN DEVICE ID ADMIN VÀO ĐÂY ====
-    const ADMIN_IDS = ["DEV-4ylra6pq6", "DEV-ADMIN2"];
+    const ADMIN_IDS = ["DEV-ADMIN1", "DEV-ADMIN2"];
 
     function getDeviceId() {
       let id = localStorage.getItem("deviceId");
@@ -213,7 +215,7 @@
 
       localStorage.setItem("deviceKeys", JSON.stringify(savedKeys));
       renderKey(data);
-      startCountdown(data.time);
+      startCountdown(data.time, data.lockedUntil);
     }
 
     function renderKey(data) {
@@ -221,15 +223,19 @@
         keyElement.textContent = data.key;
         keyElement.classList.add("locked");
         copyBtn.disabled = true;
+        lockCountdownEl.style.display = "block";
+        startLockCountdown(data.lockedUntil);
       } else {
         keyElement.textContent = data.key;
         keyElement.classList.remove("locked");
         copyBtn.disabled = false;
+        lockCountdownEl.style.display = "none";
       }
     }
 
-    function startCountdown(startTime) {
+    function startCountdown(startTime, lockedUntil) {
       function updateCountdown() {
+        if (!isAdmin && Date.now() < lockedUntil) return;
         let now = Date.now();
         let diff = 24 * 60 * 60 * 1000 - (now - startTime);
         if (diff <= 0) {
@@ -246,6 +252,25 @@
       updateCountdown();
     }
 
+    function startLockCountdown(until) {
+      function updateLockCountdown() {
+        let now = Date.now();
+        let diff = until - now;
+        if (diff <= 0) {
+          lockCountdownEl.textContent = "🔓 Bạn đã được mở khoá!";
+          loadKey();
+          return;
+        }
+        let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        lockCountdownEl.textContent = `🚫 Bị khoá! Còn lại: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+      }
+      setInterval(updateLockCountdown, 1000);
+      updateLockCountdown();
+    }
+
     function copyKey() {
       let savedKeys = JSON.parse(localStorage.getItem("deviceKeys") || "{}");
       let data = savedKeys[deviceId];
@@ -258,7 +283,7 @@
       data.copyCount++;
       data.lastAction = Date.now();
 
-      if (!data.firstCopyShown) {
+      if (!isAdmin && !data.firstCopyShown) {
         copyDialog.showModal();
         data.firstCopyShown = true;
       }
