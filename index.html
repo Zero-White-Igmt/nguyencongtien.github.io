@@ -60,6 +60,23 @@
       from { box-shadow: 0 0 10px #6e8efb; }
       to { box-shadow: 0 0 20px #a777e3; }
     }
+    /* Countdown */
+    .countdown {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #ff4d6d;
+      background: #fff0f5;
+      padding: 10px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255,77,109,0.6);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
     /* Dialog */
     dialog {
       border: none;
@@ -72,6 +89,18 @@
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: red;
+      top: -10px;
+      animation: fall 3s linear forwards;
+    }
+    @keyframes fall {
+      to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -80,6 +109,7 @@
     <div class="key-box" id="key">TTP_AQUA000AAA</div>
     <br>
     <button onclick="copyKey()">📋 Sao chép</button>
+    <div class="countdown" id="countdown"></div>
   </div>  <dialog id="notify">
     <h2>Thông Báo</h2>
     <p>Website đang trong quá trình phát triển! Còn đang ở giai đoạn Beta, rất dễ gặp lỗi.</p>
@@ -87,9 +117,10 @@
   </dialog>  <script>
     const keyElement = document.getElementById("key");
     const dialog = document.getElementById("notify");
+    const countdownEl = document.getElementById("countdown");
 
     function randomKey() {
-      let num = Math.floor(100 + Math.random() * 900); // random 3 số
+      let num = Math.floor(100 + Math.random() * 900);
       let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       let randChars = "";
       for (let i = 0; i < 3; i++) {
@@ -109,21 +140,53 @@
         localStorage.setItem("genTime", now);
       }
       keyElement.textContent = saved;
+      startCountdown(parseInt(localStorage.getItem("genTime")));
+    }
+
+    function startCountdown(startTime) {
+      function updateCountdown() {
+        let now = Date.now();
+        let diff = 24 * 60 * 60 * 1000 - (now - startTime);
+        if (diff <= 0) {
+          countdownEl.textContent = "Đang reset key...";
+          loadKey();
+          return;
+        }
+        let hours = Math.floor(diff / (1000 * 60 * 60));
+        let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        countdownEl.textContent = `⏳ Key sẽ reset sau: ${hours}h ${minutes}m ${seconds}s`;
+      }
+      setInterval(updateCountdown, 1000);
+      updateCountdown();
     }
 
     function copyKey() {
       navigator.clipboard.writeText(keyElement.textContent);
+      spawnConfetti();
       alert("Đã sao chép key!");
+    }
+
+    function spawnConfetti() {
+      for (let i = 0; i < 50; i++) {
+        let confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+        confetti.style.backgroundColor = `hsl(${Math.random() * 360},100%,50%)`;
+        confetti.style.animationDuration = (2 + Math.random() * 2) + "s";
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 4000);
+      }
     }
 
     function closeDialog() {
       dialog.close();
     }
 
-    // Mở dialog khi load trang
-    window.onload = () => {
+    // Đảm bảo countdown chạy chính xác kể cả khi đóng tab/trình duyệt
+    window.addEventListener("load", () => {
       loadKey();
       dialog.showModal();
-    }
+    });
   </script></body>
 </html>
