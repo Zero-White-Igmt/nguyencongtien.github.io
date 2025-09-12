@@ -1,1 +1,129 @@
+<!DOCTYPE html><html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Key Generator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #6e8efb, #a777e3);
+      overflow: hidden;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      text-align: center;
+      animation: popIn 1s ease;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .key-box {
+      font-size: 20px;
+      padding: 10px 15px;
+      border: 2px dashed #6e8efb;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      background: #f9f9ff;
+      display: inline-block;
+      animation: glow 2s infinite alternate;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      background: #6e8efb;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+    button:hover {
+      transform: scale(1.1);
+      background: #5b7cfa;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #6e8efb; }
+      to { box-shadow: 0 0 20px #a777e3; }
+    }
+    /* Dialog */
+    dialog {
+      border: none;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      animation: fadeIn 0.8s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔑 Key của bạn</h1>
+    <div class="key-box" id="key">TTP_AQUA000AAA</div>
+    <br>
+    <button onclick="copyKey()">📋 Sao chép</button>
+  </div>  <dialog id="notify">
+    <h2>Thông Báo</h2>
+    <p>Website đang trong quá trình phát triển! Còn đang ở giai đoạn Beta, rất dễ gặp lỗi.</p>
+    <button onclick="closeDialog()">Đã hiểu</button>
+  </dialog>  <script>
+    const keyElement = document.getElementById("key");
+    const dialog = document.getElementById("notify");
 
+    function randomKey() {
+      let num = Math.floor(100 + Math.random() * 900); // random 3 số
+      let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      let randChars = "";
+      for (let i = 0; i < 3; i++) {
+        randChars += letters.charAt(Math.floor(Math.random() * letters.length));
+      }
+      return `TTP_AQUA${num}${randChars}`;
+    }
+
+    function loadKey() {
+      let saved = localStorage.getItem("genKey");
+      let savedTime = localStorage.getItem("genTime");
+      let now = Date.now();
+
+      if (!saved || !savedTime || now - savedTime > 24 * 60 * 60 * 1000) {
+        saved = randomKey();
+        localStorage.setItem("genKey", saved);
+        localStorage.setItem("genTime", now);
+      }
+      keyElement.textContent = saved;
+    }
+
+    function copyKey() {
+      navigator.clipboard.writeText(keyElement.textContent);
+      alert("Đã sao chép key!");
+    }
+
+    function closeDialog() {
+      dialog.close();
+    }
+
+    // Mở dialog khi load trang
+    window.onload = () => {
+      loadKey();
+      dialog.showModal();
+    }
+  </script></body>
+</html>
