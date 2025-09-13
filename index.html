@@ -2,326 +2,305 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Key Generator</title>
+  <title>Key Generator - Cyberpunk</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      font-family: 'Courier New', monospace;
       height: 100vh;
-      background: linear-gradient(135deg, #6e8efb, #a777e3);
-      overflow: hidden;
+      display: flex;
       flex-direction: column;
-      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #6a3093, #a044ff);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: #fff;
+      overflow: hidden;
     }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-      text-align: center;
-      animation: popIn 1s ease;
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
     }
     h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-      color: #333;
+      font-size: 2.5rem;
+      text-shadow: 0 0 20px cyan, 0 0 40px magenta;
     }
-    .key-box {
-      font-size: 20px;
-      padding: 10px 15px;
-      border: 2px dashed #6e8efb;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      background: #f9f9ff;
-      display: inline-block;
-      animation: glow 2s infinite alternate;
-    }
-    .locked {
-      background: #333 !important;
-      color: transparent !important;
-      text-shadow: none !important;
-      user-select: none;
-    }
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 12px;
-      background: #6e8efb;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.3s;
-    }
-    button:hover:not([disabled]) {
-      transform: scale(1.1);
-      background: #5b7cfa;
-    }
-    button:disabled {
-      background: gray;
-      cursor: not-allowed;
-    }
-    @keyframes popIn {
-      from { transform: scale(0.5); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    @keyframes glow {
-      from { box-shadow: 0 0 10px #6e8efb; }
-      to { box-shadow: 0 0 20px #a777e3; }
-    }
-    .countdown, .lockdown {
-      margin-top: 20px;
-      font-size: 18px;
-      font-weight: bold;
-      color: #ff4d6d;
-      background: #fff0f5;
-      padding: 10px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(255,77,109,0.6);
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-    dialog {
-      border: none;
-      border-radius: 15px;
+    .card {
+      background: rgba(0,0,0,0.5);
+      border: 2px solid cyan;
+      border-radius: 20px;
       padding: 20px;
       text-align: center;
-      animation: fadeIn 0.8s ease;
+      margin: 20px;
+      box-shadow: 0 0 20px cyan;
+      position: relative;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
+    #keyDisplay {
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      color: #0ff;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
     }
-    .confetti {
-      position: fixed;
-      width: 10px;
-      height: 10px;
-      background-color: red;
-      top: -10px;
-      animation: fall 3s linear forwards;
+    .locked {
+      color: red !important;
+      text-shadow: 0 0 10px red, 0 0 20px darkred;
+      animation: glitch 1s infinite;
     }
-    @keyframes fall {
-      to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    @keyframes glitch {
+      0% {transform: skew(0deg);}
+      20% {transform: skew(10deg);}
+      40% {transform: skew(-10deg);}
+      60% {transform: skew(5deg);}
+      80% {transform: skew(-5deg);}
+      100% {transform: skew(0deg);}
     }
-    .about, .device-box {
-      background: white;
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(45deg, cyan, magenta);
+      color: black;
+      font-weight: bold;
+      transition: transform 0.2s ease;
+    }
+    button:hover {
+      transform: scale(1.1);
+    }
+    #countdown {
+      margin-top: 15px;
+      font-size: 2rem;
+      font-family: 'Orbitron', sans-serif;
+      color: #ff0;
+      text-shadow: 0 0 10px #ff0, 0 0 20px orange;
+    }
+    .info {
+      margin-top: 20px;
+      padding: 15px;
+      border: 2px solid magenta;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.05);
+      box-shadow: 0 0 15px magenta;
+    }
+    .device-card {
+      margin-top: 20px;
       padding: 15px;
       border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      background: rgba(0,0,0,0.6);
+      font-size: 1rem;
+      box-shadow: 0 0 15px cyan;
+    }
+    .admin {
+      color: gold;
+      text-shadow: 0 0 10px gold, 0 0 20px yellow;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: #111;
+      padding: 20px;
+      border-radius: 15px;
       text-align: center;
-      font-size: 14px;
+      color: #fff;
+      box-shadow: 0 0 20px cyan, 0 0 40px magenta;
+      animation: pop 0.5s ease;
+    }
+    @keyframes pop {
+      from {transform: scale(0.5); opacity: 0;}
+      to {transform: scale(1); opacity: 1;}
+    }
+    #musicBtn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: black;
+      color: #0ff;
+      border: 2px solid #0ff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🔑 Key của bạn</h1>
-    <div class="key-box" id="key">TTP_AQUA000AAA</div>
-    <br>
-    <button id="copyBtn" onclick="copyKey()">📋 Sao chép</button>
-    <div class="countdown" id="countdown"></div>
-    <div class="lockdown" id="lockdown" style="display:none"></div>
-  </div>  <div class="about">
-    <p><strong>Người tạo ra:</strong> Nguyễn Công Tiến, Nguyễn Hoàng Phú</p>
-    <p>TikTok: @cailon._2 | @anh_qua_ngu_ngoc</p>
-    <p>Facebook: fb.com/nguyentien | fb.com/hoangphu</p>
-  </div>  <div class="device-box">
-    <p><strong>Thiết bị ID của bạn:</strong> <span id="deviceIdBox"></span></p>
-  </div>  <dialog id="notify">
-    <h2>Thông Báo</h2>
-    <p>Website đang trong quá trình phát triển! Còn đang ở giai đoạn Beta, rất dễ gặp lỗi.</p>
-    <button onclick="closeDialog()">Đã hiểu</button>
-  </dialog>  <dialog id="firstCopy">
-    <h2>Chúc bạn sao chép vui vẻ mà không bị khoá nhé!</h2>
-    <button onclick="closeCopyDialog()">OK</button>
-  </dialog>  <dialog id="lockDialog">
-    <h2>Thông Báo!</h2>
-    <p id="lockMessage"></p>
-    <button onclick="closeLockDialog()">Đã hiểu</button>
-  </dialog>  <script>
-    const keyElement = document.getElementById("key");
-    const dialog = document.getElementById("notify");
-    const copyDialog = document.getElementById("firstCopy");
-    const lockDialog = document.getElementById("lockDialog");
-    const lockMessage = document.getElementById("lockMessage");
-    const countdownEl = document.getElementById("countdown");
-    const lockCountdownEl = document.getElementById("lockdown");
+  <h1>Cyberpunk Key Generator</h1>
+  <button id="musicBtn">🎵</button>
+  <div class="card">
+    <div id="keyDisplay">Đang tải...</div>
+    <button id="copyBtn">📋 Sao chép</button>
+    <div id="countdown">--:--:--</div>
+  </div>  <div class="info">
+    <p>Người tạo ra: Nguyễn Công Tiến, Nguyễn Hoàng Phú</p>
+    <p>TikTok: @tiktok_tien, @tiktok_phu</p>
+    <p>Facebook: fb.com/tien, fb.com/phu</p>
+  </div>  <div class="device-card" id="deviceCard">
+    Thiết bị ID: <span id="deviceId"></span><br>
+    Trạng thái: <span id="deviceStatus"></span>
+  </div>  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h2 id="modalTitle"></h2>
+      <p id="modalMsg"></p>
+      <button onclick="closeModal()">OK</button>
+    </div>
+  </div>  <audio id="bgMusic" loop>
+    <source src="https://cdn.pixabay.com/audio/2023/07/10/audio_7e9f09.mp3" type="audio/mpeg">
+  </audio>  <script>
+    // Admin IDs
+    const ADMIN_IDS = ["PUT_ADMIN_ID_1_HERE", "PUT_ADMIN_ID_2_HERE"];
+
+    // Device ID
+    let deviceId = localStorage.getItem("deviceId");
+    if (!deviceId) {
+      deviceId = "DEV-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+      localStorage.setItem("deviceId", deviceId);
+    }
+    document.getElementById("deviceId").innerText = deviceId;
+
+    let isAdmin = ADMIN_IDS.includes(deviceId);
+    document.getElementById("deviceStatus").innerText = isAdmin ? "👑 Admin" : "User";
+    if (isAdmin) document.getElementById("deviceCard").classList.add("admin");
+
+    // Key handling
+    function generateKey() {
+      const prefix = "TTP_AQUA";
+      const numbers = Math.floor(100 + Math.random() * 900);
+      const letters = Array(3).fill(0).map(()=> String.fromCharCode(65 + Math.floor(Math.random()*26))).join("");
+      return `${prefix}${numbers}${letters}`;
+    }
+
+    let keyData = JSON.parse(localStorage.getItem("keyData")) || {};
+    if (!keyData[deviceId] || Date.now() - keyData[deviceId].time > 24*60*60*1000) {
+      keyData[deviceId] = { key: generateKey(), time: Date.now(), copies: 0, lockedUntil: 0, shownDialog: false };
+      localStorage.setItem("keyData", JSON.stringify(keyData));
+    }
+    let current = keyData[deviceId];
+
+    const keyDisplay = document.getElementById("keyDisplay");
     const copyBtn = document.getElementById("copyBtn");
-    const deviceIdBox = document.getElementById("deviceIdBox");
+    const countdown = document.getElementById("countdown");
 
-    // ==== DÁN DEVICE ID ADMIN VÀO ĐÂY ====
-    const ADMIN_IDS = ["DEV-4ylra6pq6", "DEV-ADMIN2"];
-
-    function getDeviceId() {
-      let id = localStorage.getItem("deviceId");
-      if (!id) {
-        id = "DEV-" + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem("deviceId", id);
-      }
-      return id;
-    }
-
-    const deviceId = getDeviceId();
-    deviceIdBox.textContent = deviceId;
-    const isAdmin = ADMIN_IDS.includes(deviceId);
-
-    function randomKey() {
-      let num = Math.floor(100 + Math.random() * 900);
-      let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      let randChars = "";
-      for (let i = 0; i < 3; i++) {
-        randChars += letters.charAt(Math.floor(Math.random() * letters.length));
-      }
-      return `TTP_AQUA${num}${randChars}`;
-    }
-
-    function loadKey() {
-      let savedKeys = JSON.parse(localStorage.getItem("deviceKeys") || "{}");
-      if (!savedKeys[deviceId]) {
-        savedKeys[deviceId] = {
-          key: randomKey(),
-          time: Date.now(),
-          copyCount: 0,
-          lockedUntil: 0,
-          firstCopyShown: false,
-          lastAction: Date.now()
-        };
-        localStorage.setItem("deviceKeys", JSON.stringify(savedKeys));
-      }
-      let data = savedKeys[deviceId];
-
-      // Reset sau 24h
-      if (Date.now() - data.time > 24 * 60 * 60 * 1000) {
-        data.key = randomKey();
-        data.time = Date.now();
-        data.copyCount = 0;
-        data.lockedUntil = 0;
-        data.firstCopyShown = false;
-      }
-
-      // Check 5h inactivity lock (trừ admin)
-      if (!isAdmin && Date.now() - data.lastAction > 5 * 60 * 60 * 1000 && Date.now() > data.lockedUntil) {
-        data.lockedUntil = Date.now() + 4 * 24 * 60 * 60 * 1000;
-        lockMessage.textContent = "Đã 5 tiếng bạn không sao chép code nên đã bị khoá! Vui lòng đợi 4 ngày sau.";
-        lockDialog.showModal();
-      }
-
-      localStorage.setItem("deviceKeys", JSON.stringify(savedKeys));
-      renderKey(data);
-      startCountdown(data.time, data.lockedUntil);
-    }
-
-    function renderKey(data) {
-      if (!isAdmin && Date.now() < data.lockedUntil) {
-        keyElement.textContent = data.key;
-        keyElement.classList.add("locked");
+    function updateUI() {
+      if (Date.now() < current.lockedUntil && !isAdmin) {
+        keyDisplay.innerText = current.key;
+        keyDisplay.classList.add("locked");
         copyBtn.disabled = true;
-        lockCountdownEl.style.display = "block";
-        startLockCountdown(data.lockedUntil);
+        document.getElementById("deviceStatus").innerText = "⛔ Locked";
       } else {
-        keyElement.textContent = data.key;
-        keyElement.classList.remove("locked");
+        keyDisplay.innerText = current.key;
+        keyDisplay.classList.remove("locked");
         copyBtn.disabled = false;
-        lockCountdownEl.style.display = "none";
+        document.getElementById("deviceStatus").innerText = isAdmin ? "👑 Admin" : "Active";
       }
     }
 
-    function startCountdown(startTime, lockedUntil) {
-      function updateCountdown() {
-        if (!isAdmin && Date.now() < lockedUntil) return;
-        let now = Date.now();
-        let diff = 24 * 60 * 60 * 1000 - (now - startTime);
-        if (diff <= 0) {
-          countdownEl.textContent = "Đang reset key...";
-          loadKey();
-          return;
+    updateUI();
+
+    copyBtn.addEventListener("click", () => {
+      if (!isAdmin && Date.now() < current.lockedUntil) return;
+      navigator.clipboard.writeText(current.key);
+
+      // Animation button
+      copyBtn.innerText = "✅ Copied!";
+      setTimeout(()=> copyBtn.innerText = "📋 Sao chép", 2000);
+
+      // Fireworks effect
+      confetti();
+
+      if (!isAdmin) {
+        current.copies++;
+        if (!current.shownDialog) {
+          openModal("Thông Báo", "Chúc bạn sao chép vui vẻ mà không bị khoá nhé!");
+          current.shownDialog = true;
         }
-        let hours = Math.floor(diff / (1000 * 60 * 60));
-        let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        let seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        countdownEl.textContent = `⏳ Key sẽ reset sau: ${hours}h ${minutes}m ${seconds}s`;
-      }
-      setInterval(updateCountdown, 1000);
-      updateCountdown();
-    }
-
-    function startLockCountdown(until) {
-      function updateLockCountdown() {
-        let now = Date.now();
-        let diff = until - now;
-        if (diff <= 0) {
-          lockCountdownEl.textContent = "🔓 Bạn đã được mở khoá!";
-          loadKey();
-          return;
+        if (current.copies > 5) {
+          current.lockedUntil = Date.now() + 4*24*60*60*1000;
+          openModal("Thông Báo!", "Bạn vượt quá giới hạn số lần sao chép! Vui lòng đợi 4 ngày sau.");
         }
-        let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        let seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        lockCountdownEl.textContent = `🚫 Bị khoá! Còn lại: ${days}d ${hours}h ${minutes}m ${seconds}s`;
       }
-      setInterval(updateLockCountdown, 1000);
-      updateLockCountdown();
-    }
+      keyData[deviceId] = current;
+      localStorage.setItem("keyData", JSON.stringify(keyData));
+    });
 
-    function copyKey() {
-      let savedKeys = JSON.parse(localStorage.getItem("deviceKeys") || "{}");
-      let data = savedKeys[deviceId];
-
-      if (!isAdmin && Date.now() < data.lockedUntil) {
-        renderKey(data);
-        return;
-      }
-
-      data.copyCount++;
-      data.lastAction = Date.now();
-
-      if (!isAdmin && !data.firstCopyShown) {
-        copyDialog.showModal();
-        data.firstCopyShown = true;
-      }
-
-      if (!isAdmin && data.copyCount > 5) {
-        data.lockedUntil = Date.now() + 4 * 24 * 60 * 60 * 1000;
-        lockMessage.textContent = "Bạn vượt quá giới hạn số lần sao chép! Vui lòng đợi 4 ngày sau.";
-        lockDialog.showModal();
-      }
-
-      navigator.clipboard.writeText(data.key);
-      spawnConfetti();
-      alert("Đã sao chép key!");
-
-      savedKeys[deviceId] = data;
-      localStorage.setItem("deviceKeys", JSON.stringify(savedKeys));
-      renderKey(data);
-    }
-
-    function spawnConfetti() {
-      for (let i = 0; i < 50; i++) {
-        let confetti = document.createElement("div");
-        confetti.className = "confetti";
-        confetti.style.left = Math.random() * window.innerWidth + "px";
-        confetti.style.backgroundColor = `hsl(${Math.random() * 360},100%,50%)`;
-        confetti.style.animationDuration = (2 + Math.random() * 2) + "s";
-        document.body.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 4000);
+    // 5h no copy auto lock
+    if (!isAdmin) {
+      if (!current.lastActive) current.lastActive = Date.now();
+      if (Date.now() - current.lastActive > 5*60*60*1000 && Date.now() > current.lockedUntil) {
+        current.lockedUntil = Date.now() + 4*24*60*60*1000;
+        openModal("Thông Báo!", "Đã 5 tiếng bạn không sao chép code nên đã bị khoá! Vui lòng đợi 4 ngày sau.");
+        keyData[deviceId] = current;
+        localStorage.setItem("keyData", JSON.stringify(keyData));
       }
     }
 
-    function closeDialog() { dialog.close(); }
-    function closeCopyDialog() { copyDialog.close(); }
-    function closeLockDialog() { lockDialog.close(); }
-
-    window.onload = () => {
-      loadKey();
-      dialog.showModal();
+    // Countdown
+    function updateCountdown() {
+      if (Date.now() < current.lockedUntil && !isAdmin) {
+        let dist = current.lockedUntil - Date.now();
+        let d = Math.floor(dist/(1000*60*60*24));
+        let h = Math.floor((dist%(1000*60*60*24))/(1000*60*60));
+        let m = Math.floor((dist%(1000*60*60))/(1000*60));
+        let s = Math.floor((dist%(1000*60))/1000);
+        countdown.innerText = `${d}d ${h}h ${m}m ${s}s`;
+      } else {
+        let resetDist = (current.time + 24*60*60*1000) - Date.now();
+        let h = Math.floor((resetDist%(1000*60*60*24))/(1000*60*60));
+        let m = Math.floor((resetDist%(1000*60*60))/(1000*60));
+        let s = Math.floor((resetDist%(1000*60))/1000);
+        countdown.innerText = `Reset: ${h}h ${m}m ${s}s`;
+      }
     }
+    setInterval(updateCountdown,1000);
+
+    // Modal
+    function openModal(title, msg) {
+      document.getElementById("modalTitle").innerText = title;
+      document.getElementById("modalMsg").innerText = msg;
+      document.getElementById("modal").style.display = "flex";
+    }
+    function closeModal() {
+      document.getElementById("modal").style.display = "none";
+    }
+
+    // Confetti effect
+    function confetti() {
+      for (let i=0; i<30; i++) {
+        const div = document.createElement("div");
+        div.innerText = "🎉";
+        div.style.position = "fixed";
+        div.style.left = Math.random()*100+"%";
+        div.style.top = "-20px";
+        div.style.fontSize = "20px";
+        div.style.animation = `fall ${2+Math.random()*3}s linear`;
+        document.body.appendChild(div);
+        setTimeout(()=>div.remove(),4000);
+      }
+    }
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes fall {
+        to {transform: translateY(110vh) rotate(720deg); opacity:0;}
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Music toggle
+    const bgMusic = document.getElementById("bgMusic");
+    document.getElementById("musicBtn").addEventListener("click", ()=>{
+      if(bgMusic.paused){ bgMusic.play(); } else { bgMusic.pause(); }
+    });
   </script></body>
 </html>
