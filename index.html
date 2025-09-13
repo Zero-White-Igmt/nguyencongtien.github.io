@@ -151,8 +151,8 @@
     Trạng thái: <span id="deviceStatus"></span>
   </div>  <div id="modal" class="modal">
     <div class="modal-content">
-      <h2 id="modalTitle"></h2>
-      <p id="modalMsg"></p>
+      <h2 id="modalTitle">Thông Báo!</h2>
+      <p id="modalMsg">Web đang ở giai đoạn Stable (ổn định) phiên bản 1.6 ALPHA. Báo cáo lỗi bug bằng cách liên hệ ADMIN qua TikTok cailon._2</p>
       <button onclick="closeModal()">OK</button>
     </div>
   </div>  <audio id="bgMusic" loop>
@@ -170,7 +170,7 @@
     document.getElementById("deviceId").innerText = deviceId;
 
     let isAdmin = ADMIN_IDS.includes(deviceId);
-    document.getElementById("deviceStatus").innerText = isAdmin ? "👑 Admin" : "User";
+    document.getElementById("deviceStatus").innerText = isAdmin ? "👑 Quản trị viên" : "User thường";
     if (isAdmin) document.getElementById("deviceCard").classList.add("admin");
 
     // Key handling
@@ -197,12 +197,12 @@
         keyDisplay.innerText = current.key;
         keyDisplay.classList.add("locked");
         copyBtn.disabled = true;
-        document.getElementById("deviceStatus").innerText = "⛔ Đã khoá";
+        document.getElementById("deviceStatus").innerText = "⛔ Đã khoá thiết bị do có hành vị lạ!";
       } else {
         keyDisplay.innerText = current.key;
         keyDisplay.classList.remove("locked");
         copyBtn.disabled = false;
-        document.getElementById("deviceStatus").innerText = isAdmin ? "👑 Admin" : "Active";
+        document.getElementById("deviceStatus").innerText = isAdmin ? "👑 Quản trị viên" : "Active";
       }
     }
 
@@ -259,7 +259,7 @@
         let h = Math.floor((resetDist%(1000*60*60*24))/(1000*60*60));
         let m = Math.floor((resetDist%(1000*60*60))/(1000*60));
         let s = Math.floor((resetDist%(1000*60))/1000);
-        countdown.innerText = `Reset: ${h}h ${m}m ${s}s`;
+        countdown.innerText = `Key sẽ reset sau: ${h}h ${m}m ${s}s`;
       }
     }
     setInterval(updateCountdown,1000);
