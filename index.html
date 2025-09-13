@@ -44,8 +44,10 @@
       text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
     }
     .locked {
-      color: red !important;
-      text-shadow: 0 0 10px red, 0 0 20px darkred;
+      color: black !important;
+      background: #222;
+      text-shadow: none !important;
+      user-select: none;
       animation: glitch 1s infinite;
     }
     @keyframes glitch {
@@ -144,7 +146,7 @@
     <div id="countdown">--:--:--</div>
   </div>  <div class="info">
     <p>Người tạo ra: Nguyễn Công Tiến, Nguyễn Hoàng Phú</p>
-    <p>TikTok: @tiktok_tien, @tiktok_phu</p>
+    <p>TikTok: @cailon._2, @anh_qua_ngu_ngoc</p>
     <p>Facebook: fb.com/tien, fb.com/phu</p>
   </div>  <div class="device-card" id="deviceCard">
     Thiết bị ID: <span id="deviceId"></span><br>
@@ -152,16 +154,14 @@
   </div>  <div id="modal" class="modal">
     <div class="modal-content">
       <h2 id="modalTitle">Thông Báo!</h2>
-      <p id="modalMsg">Web đang ở giai đoạn Stable (ổn định) phiên bản 1.6 ALPHA. Báo cáo lỗi bug bằng cách liên hệ ADMIN qua TikTok cailon._2</p>
+      <p id="modalMsg">Web đang ở giai đoạn Stable (ổn định) phiên bản 1.2 ALPHA. Báo cáo bug liên hệ ADMIN qua TikTok cailon._2</p>
       <button onclick="closeModal()">OK</button>
     </div>
   </div>  <audio id="bgMusic" loop>
     <source src="https://cdn.pixabay.com/audio/2023/07/10/audio_7e9f09.mp3" type="audio/mpeg">
   </audio>  <script>
-    // Admin IDs
     const ADMIN_IDS = ["DEV-4ylra6pq6", "PUT_ADMIN_ID_2_HERE"];
 
-    // Device ID
     let deviceId = localStorage.getItem("deviceId");
     if (!deviceId) {
       deviceId = "DEV-" + Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -170,10 +170,9 @@
     document.getElementById("deviceId").innerText = deviceId;
 
     let isAdmin = ADMIN_IDS.includes(deviceId);
-    document.getElementById("deviceStatus").innerText = isAdmin ? "👑 Quản trị viên" : "User thường";
+    document.getElementById("deviceStatus").innerText = isAdmin ? "👑 Quản trị viên" : "Người thường";
     if (isAdmin) document.getElementById("deviceCard").classList.add("admin");
 
-    // Key handling
     function generateKey() {
       const prefix = "TTP_AQUA";
       const numbers = Math.floor(100 + Math.random() * 900);
@@ -197,12 +196,12 @@
         keyDisplay.innerText = current.key;
         keyDisplay.classList.add("locked");
         copyBtn.disabled = true;
-        document.getElementById("deviceStatus").innerText = "⛔ Đã khoá thiết bị do có hành vị lạ!";
+        document.getElementById("deviceStatus").innerText = "⛔ Đã bị khoá do có hành vi đáng nghi ngờ!";
       } else {
         keyDisplay.innerText = current.key;
         keyDisplay.classList.remove("locked");
         copyBtn.disabled = false;
-        document.getElementById("deviceStatus").innerText = isAdmin ? "👑 Quản trị viên" : "Active";
+        document.getElementById("deviceStatus").innerText = isAdmin ? "👑 Quản trị viên" : "Hoạt động";
       }
     }
 
@@ -212,11 +211,9 @@
       if (!isAdmin && Date.now() < current.lockedUntil) return;
       navigator.clipboard.writeText(current.key);
 
-      // Animation button
       copyBtn.innerText = "✅ Đã sao chép!";
       setTimeout(()=> copyBtn.innerText = "📋 Sao chép", 2000);
 
-      // Fireworks effect
       confetti();
 
       if (!isAdmin) {
@@ -228,13 +225,14 @@
         if (current.copies > 5) {
           current.lockedUntil = Date.now() + 4*24*60*60*1000;
           openModal("Thông Báo!", "Bạn vượt quá giới hạn số lần sao chép! Vui lòng đợi 4 ngày sau.");
+          updateUI();
         }
       }
+      current.lastActive = Date.now();
       keyData[deviceId] = current;
       localStorage.setItem("keyData", JSON.stringify(keyData));
     });
 
-    // 5h no copy auto lock
     if (!isAdmin) {
       if (!current.lastActive) current.lastActive = Date.now();
       if (Date.now() - current.lastActive > 5*60*60*1000 && Date.now() > current.lockedUntil) {
@@ -242,10 +240,10 @@
         openModal("Thông Báo!", "Đã 5 tiếng bạn không sao chép code nên đã bị khoá! Vui lòng đợi 4 ngày sau.");
         keyData[deviceId] = current;
         localStorage.setItem("keyData", JSON.stringify(keyData));
+        updateUI();
       }
     }
 
-    // Countdown
     function updateCountdown() {
       if (Date.now() < current.lockedUntil && !isAdmin) {
         let dist = current.lockedUntil - Date.now();
@@ -264,7 +262,6 @@
     }
     setInterval(updateCountdown,1000);
 
-    // Modal
     function openModal(title, msg) {
       document.getElementById("modalTitle").innerText = title;
       document.getElementById("modalMsg").innerText = msg;
@@ -274,7 +271,6 @@
       document.getElementById("modal").style.display = "none";
     }
 
-    // Confetti effect
     function confetti() {
       for (let i=0; i<30; i++) {
         const div = document.createElement("div");
@@ -297,7 +293,6 @@
     `;
     document.head.appendChild(style);
 
-    // Music toggle
     const bgMusic = document.getElementById("bgMusic");
     document.getElementById("musicBtn").addEventListener("click", ()=>{
       if(bgMusic.paused){ bgMusic.play(); } else { bgMusic.pause(); }
