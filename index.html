@@ -159,7 +159,7 @@
     <source src="https://cdn.pixabay.com/audio/2023/07/10/audio_7e9f09.mp3" type="audio/mpeg">
   </audio>  <script>
     // Admin IDs
-    const ADMIN_IDS = ["PUT_ADMIN_ID_1_HERE", "PUT_ADMIN_ID_2_HERE"];
+    const ADMIN_IDS = ["DEV-4ylra6pq6", "PUT_ADMIN_ID_2_HERE"];
 
     // Device ID
     let deviceId = localStorage.getItem("deviceId");
@@ -197,7 +197,7 @@
         keyDisplay.innerText = current.key;
         keyDisplay.classList.add("locked");
         copyBtn.disabled = true;
-        document.getElementById("deviceStatus").innerText = "⛔ Locked";
+        document.getElementById("deviceStatus").innerText = "⛔ Đã khoá";
       } else {
         keyDisplay.innerText = current.key;
         keyDisplay.classList.remove("locked");
@@ -213,7 +213,7 @@
       navigator.clipboard.writeText(current.key);
 
       // Animation button
-      copyBtn.innerText = "✅ Copied!";
+      copyBtn.innerText = "✅ Đã sao chép!";
       setTimeout(()=> copyBtn.innerText = "📋 Sao chép", 2000);
 
       // Fireworks effect
